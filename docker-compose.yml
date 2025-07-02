@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  django:
+    # Construit l'image à partir du Dockerfile à la racine du projet
+    build: .
+    image: monprojet_local_django
+    container_name: monprojet_local_django
+    # Monte le code local dans le conteneur pour le rechargement automatique
+    volumes:
+      - .:/app:z
+    # Lie le port de l'hôte au port du conteneur
+    ports:
+      - "8000:8000"
+    # Fichiers de variables d'environnement
+    env_file:
+      - ./.envs/.local/.django
+      - ./.envs/.local/.postgres
+    # Dépend du service postgres pour s'assurer qu'il démarre en premier
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:15
+    container_name: monprojet_local_postgres
+    # Stocke les données de la base de données de manière persistante
+    volumes:
+      - monprojet_local_postgres_data:/var/lib/postgresql/data
+    # Fichier de variables d'environnement pour la configuration de la DB
+    env_file:
+      - ./.envs/.local/.postgres
+
+volumes:
+  monprojet_local_postgres_data:
