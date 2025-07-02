@@ -284,8 +284,7 @@ SOCIALACCOUNT_FORMS = {"signup": "monprojet.users.forms.UserSocialSignupForm"}
 WAGTAIL_SITE_NAME = "Mon Projet"
 WAGTAILADMIN_BASE_URL = "http://localhost:8000"
 WAGTAIL_USER_LIST_DISPLAY = ("username", "name", "email", "is_staff", "is_superuser")
-WAGTAIL_USER_ORDER_BY = ("username",)
+WAGTAIL_USER_ORDER_BY = ("name", "username")  # Utiliser 'name' au lieu de 'last_name', 'first_name'
 WAGTAIL_USER_SEARCH_FIELDS = ("username", "name", "email")
 
 # Your stuff...
-# ------------------------------------------------------------------------------
