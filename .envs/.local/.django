@@ -1,1 +1,2 @@
 DATABASE_URL=postgres://monprojet:changethispassword@postgres:5432/monprojet
+DJANGO_ALLOWED_HOSTS=4.178.188.187,4.178.188.238

@@ -5,6 +5,7 @@
 from pathlib import Path
 
 import environ
+import os
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 # monprojet/
@@ -46,8 +47,12 @@ DATABASES = {
     ),
 }
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
-# https://docs.djangoproject.com/en/stable/ref/settings/#std:setting-DEFAULT_AUTO_FIELD
+# https://docs.djangoproject.com/stable/ref/settings/#std:setting-DEFAULT_AUTO_FIELD
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# REDIS
+# ------------------------------------------------------------------------------
+REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
 
 # URLS
 # ------------------------------------------------------------------------------
