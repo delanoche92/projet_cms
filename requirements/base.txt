@@ -13,4 +13,4 @@ django-allauth[mfa]
 django-crispy-forms
 crispy-bootstrap5
 django-redis
-wagtail>=5.2,<5.3
+wagtail>=5.2,<7.1
