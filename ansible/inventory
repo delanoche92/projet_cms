@@ -11,4 +11,3 @@ prod_server ansible_host=4.178.188.238
 ansible_user=adminuser
 
 ansible_ssh_private_key_file=~/.ssh/id_rsa
-ghcr_username=delanoche92
