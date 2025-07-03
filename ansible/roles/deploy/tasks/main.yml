@@ -1,0 +1,30 @@
+# dans ansible/roles/deploy/tasks/main.yml
+
+- name: Connexion à GitHub Container Registry
+  community.docker.docker_login:
+    registry: ghcr.io
+    username: "{{ ghcr_username }}"
+    password: "{{ ghcr_pat }}"
+  become: no
+
+- name: Créer le dossier de l'application sur le serveur
+  file:
+    path: /home/adminuser/app
+    state: directory
+
+- name: Copier le fichier docker-compose de production sur le serveur
+  copy:
+    src: "{{ inventory_dir }}/../docker-compose.prod.yml"
+    dest: /home/adminuser/app/docker-compose.yml
+
+- name: Copier les variables d'environnement
+  copy:
+    src: "{{ inventory_dir }}/../.envs/.local"
+    dest: /home/adminuser/app/.envs/
+
+- name: Lancer les conteneurs avec Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: /home/adminuser/app
+    state: present
+    pull: always
+  become: no

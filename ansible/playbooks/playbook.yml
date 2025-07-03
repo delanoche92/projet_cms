@@ -1,0 +1,7 @@
+# dans ansible/playbook.yml
+
+- name: Configurer les serveurs avec les rôles de base
+  hosts: all
+  roles:
+    - common
+    - deploy

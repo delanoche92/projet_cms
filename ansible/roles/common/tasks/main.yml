@@ -1,0 +1,50 @@
+# dans ansible/roles/common/tasks/main.yml
+
+- name: Mettre à jour le cache apt et installer les prérequis
+  become: yes
+  apt:
+    update_cache: yes
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+    state: present
+
+- name: Ajouter la clé GPG officielle de Docker
+  become: yes
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Ajouter le dépôt Docker
+  become: yes
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu jammy stable
+    state: present
+
+# --- TÂCHE AJOUTÉE ---
+- name: Mettre à jour le cache apt APRES ajout du dépôt Docker
+  become: yes
+  apt:
+    update_cache: yes
+# --------------------
+
+- name: Installer Docker Engine et Docker Compose
+  become: yes
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-compose-plugin
+    state: present
+    # On peut laisser update_cache ici par sécurité, mais la tâche précédente fait le travail
+    update_cache: yes
+
+- name: S'assurer que l'utilisateur 'adminuser' peut utiliser Docker sans sudo
+  become: yes
+  user:
+    name: "{{ ansible_user }}"
+    groups: docker
+    append: yes
