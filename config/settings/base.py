@@ -5,7 +5,6 @@
 from pathlib import Path
 
 import environ
-import os
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 # monprojet/
@@ -47,12 +46,8 @@ DATABASES = {
     ),
 }
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
-# https://docs.djangoproject.com/stable/ref/settings/#std:setting-DEFAULT_AUTO_FIELD
+# https://docs.djangoproject.com/en/stable/ref/settings/#std:setting-DEFAULT_AUTO_FIELD
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-# REDIS
-# ------------------------------------------------------------------------------
-REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
 
 # URLS
 # ------------------------------------------------------------------------------
@@ -152,7 +147,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
-    "wagtail.contrib.redirects.middleware.RedirectMiddleware", # Middleware pour Wagtail
+    "wagtail.contrib.redirects.middleware.RedirectMiddleware",
 ]
 
 # STATIC
@@ -266,6 +261,12 @@ LOGGING = {
     "root": {"level": "INFO", "handlers": ["console"]},
 }
 
+# --- BLOC REDIS CORRIGÉ ---
+# ------------------------------------------------------------------------------
+REDIS_URL = env("REDIS_URL", default="redis://localhost:6379/0")
+REDIS_SSL = REDIS_URL.startswith("rediss://")
+
+
 # django-allauth
 # ------------------------------------------------------------------------------
 ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)
@@ -289,7 +290,8 @@ SOCIALACCOUNT_FORMS = {"signup": "monprojet.users.forms.UserSocialSignupForm"}
 WAGTAIL_SITE_NAME = "Mon Projet"
 WAGTAILADMIN_BASE_URL = "http://localhost:8000"
 WAGTAIL_USER_LIST_DISPLAY = ("username", "name", "email", "is_staff", "is_superuser")
-WAGTAIL_USER_ORDER_BY = ("name", "username")  # Utiliser 'name' au lieu de 'last_name', 'first_name'
+WAGTAIL_USER_ORDER_BY = ("name", "username")
 WAGTAIL_USER_SEARCH_FIELDS = ("username", "name", "email")
 
 # Your stuff...
+# ------------------------------------------------------------------------------

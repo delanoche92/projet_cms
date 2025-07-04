@@ -1,5 +1,3 @@
-# dans ansible/roles/deploy/tasks/main.yml
-
 - name: Connexion à GitHub Container Registry
   community.docker.docker_login:
     registry: ghcr.io
@@ -7,19 +5,58 @@
     password: "{{ ghcr_pat }}"
   become: no
 
-- name: Créer le dossier de l'application sur le serveur
+- name: Créer l'arborescence des dossiers sur le serveur
+  become: yes
   file:
-    path: /home/adminuser/app
+    path: /home/adminuser/app/config/nginx
     state: directory
+    owner: adminuser
+    group: adminuser
+    mode: '0755'
+    recurse: yes
 
-- name: Copier le fichier docker-compose de production sur le serveur
+- name: Copier le fichier docker-compose de production
   copy:
     src: "{{ inventory_dir }}/../docker-compose.prod.yml"
     dest: /home/adminuser/app/docker-compose.yml
 
-- name: Copier les variables d'environnement
+# --- TÂCHE DE NETTOYAGE AJOUTÉE ---
+- name: S'assurer que le chemin de la conf Nginx n'est pas un dossier
+  file:
+    path: /home/adminuser/app/config/nginx/default.conf
+    state: absent
+# ---------------------------------
+
+- name: Créer le fichier de configuration Nginx directement sur le serveur
   copy:
-    src: "{{ inventory_dir }}/../.envs/.local"
+    dest: /home/adminuser/app/config/nginx/default.conf
+    content: |
+      upstream django {
+          server django:8000;
+      }
+
+      server {
+          listen 80;
+
+          location /static/ {
+              alias /app/staticfiles/;
+          }
+
+          location /media/ {
+              alias /app/monprojet/media/;
+          }
+
+          location / {
+              proxy_pass http://django;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header Host $host;
+              proxy_redirect off;
+          }
+      }
+
+- name: Copier les variables d'environnement de production
+  copy:
+    src: "{{ inventory_dir }}/../.envs/.production"
     dest: /home/adminuser/app/.envs/
 
 - name: Lancer les conteneurs avec Docker Compose
