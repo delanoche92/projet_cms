@@ -1,0 +1,7 @@
+# Variables de production pour Django
+DJANGO_SETTINGS_MODULE=config.settings.production
+DJANGO_SECRET_KEY=VOTRE_CLE_SECRETE_GENeree_precedemment
+DJANGO_ALLOWED_HOSTS=4.178.188.187,4.178.188.238
+DATABASE_URL=postgres://monprojet:changethispassword@postgres:5432/monprojet
+DJANGO_ADMIN_URL=admin/
+REDIS_URL=redis://redis:6379/0
